@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warta Dunia — Portal Berita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg:#0b0d10;
+    --surface:#12151a;
+    --surface2:#181c23;
+    --line:rgba(255,255,255,.08);
+    --text:#eef1f5;
+    --muted:#8b93a1;
+    --accent:#ff3b4e;
+    --accent2:#ff6b3b;
+    --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    line-height:1.6;
+    min-height:100vh;
+}
+img{max-width:100%}
+button{font-family:inherit;cursor:pointer}
+::selection{background:var(--accent);color:#fff}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#2a2f38;border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:#3a4150}
+
+/* ===== HEADER ===== */
+header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(16px);
+    background:rgba(11,13,16,.75);
+    border-bottom:1px solid var(--line);
+}
+.header-inner{
+    max-width:1180px;margin:0 auto;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.brand-icon{
+    width:40px;height:40px;border-radius:12px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;font-size:20px;
+    box-shadow:0 4px 16px rgba(255,59,78,.35);
+}
+.brand h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;letter-spacing:.5px;line-height:1.1}
+.brand h1 em{font-style:normal;color:var(--accent)}
+.brand small{display:block;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:2px;text-transform:uppercase}
+
+.nav{display:flex;align-items:center;gap:10px}
+.btn{
+    border:none;border-radius:10px;font-size:13.5px;font-weight:700;
+    padding:10px 18px;transition:.2s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.25)}
+.btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+    box-shadow:0 4px 14px rgba(255,59,78,.3);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,59,78,.45)}
+.btn-soft{background:var(--surface2);color:var(--text);border:1px solid var(--line)}
+.btn-soft:hover{border-color:rgba(255,255,255,.25)}
+.btn-danger{background:rgba(255,59,78,.12);color:var(--accent);border:1px solid rgba(255,59,78,.3)}
+.btn-danger:hover{background:rgba(255,59,78,.2)}
+
+.admin-pill{
+    display:none;align-items:center;gap:8px;
+    background:rgba(42,157,143,.12);border:1px solid rgba(42,157,143,.35);
+    color:#2dd4bf;font-size:12px;font-weight:700;padding:8px 14px;border-radius:99px;
+}
+.admin-pill.show{display:inline-flex}
+.admin-pill .dot{width:7px;height:7px;border-radius:50%;background:#2dd4bf;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ===== TICKER ===== */
+.ticker{
+    background:linear-gradient(90deg,rgba(255,59,78,.12),transparent 60%);
+    border-bottom:1px solid var(--line);
+    padding:9px 0;overflow:hidden;white-space:nowrap;font-size:12.5px;color:var(--muted);
+}
+.ticker b{color:var(--accent);margin-right:12px;letter-spacing:1px}
+.ticker-track{display:inline-block;animation:tick 30s linear infinite}
+@keyframes tick{from{transform:translateX(60vw)}to{transform:translateX(-100%)}}
+
+/* ===== LAYOUT ===== */
+main{max-width:1180px;margin:0 auto;padding:40px 24px 80px}
+.view{display:none;animation:fadeUp .35s ease}
+.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ===== HERO BERANDA ===== */
+.hero{margin-bottom:44px}
+.hero .eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px}
+.hero h2{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,46px);line-height:1.15;max-width:640px}
+.hero p{color:var(--muted);margin-top:14px;max-width:540px;font-size:15px}
+
+/* ===== FILTER CHIPS ===== */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.chip{
+    background:var(--surface);border:1px solid var(--line);color:var(--muted);
+    font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:99px;transition:.2s;
+}
+.chip:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ===== GRID BERITA ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;cursor:pointer;transition:.25s;display:flex;flex-direction:column;
+}
+.card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.18);box-shadow:0 16px 40px rgba(0,0,0,.45)}
+.card .thumb{position:relative;overflow:hidden;aspect-ratio:16/9;background:var(--surface2)}
+.card .thumb img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.card:hover .thumb img{transform:scale(1.05)}
+.card .tag{
+    position:absolute;top:14px;left:14px;z-index:2;
+    background:rgba(11,13,16,.7);backdrop-filter:blur(8px);
+    color:var(--accent);font-size:10.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+    padding:5px 12px;border-radius:99px;border:1px solid rgba(255,59,78,.3);
+}
+.card .body{padding:20px;display:flex;flex-direction:column;flex:1;gap:10px}
+.card h3{font-size:17px;font-weight:800;line-height:1.4;transition:.2s}
+.card:hover h3{color:var(--accent)}
+.card p.excerpt{color:var(--muted);font-size:13.5px;flex:1;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .foot{
+    display:flex;align-items:center;gap:10px;padding-top:12px;
+    border-top:1px solid var(--line);font-size:12px;color:var(--muted);
+}
+.avatar{
+    width:26px;height:26px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,#415a77,#778da9);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:800;color:#fff;
+}
+.empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--muted)}
+.empty .big{font-size:44px;margin-bottom:12px}
+
+/* ===== HALAMAN LOGIN (inline, bukan popup) ===== */
+.auth-wrap{max-width:420px;margin:60px auto}
+.auth-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:40px 36px;
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+}
+.auth-card .icon{
+    width:56px;height:56px;border-radius:16px;margin:0 auto 20px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;font-size:26px;
+    box-shadow:0 8px 24px rgba(255,59,78,.35);
+}
+.auth-card h2{text-align:center;font-family:'Playfair Display',serif;font-size:26px;margin-bottom:6px}
+.auth-card .sub{text-align:center;color:var(--muted);font-size:13.5px;margin-bottom:28px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.field input,.field select,.field textarea{
+    width:100%;background:var(--surface2);border:1px solid var(--line);
+    color:var(--text);border-radius:12px;padding:13px 16px;font-size:14.5px;font-family:inherit;
+    transition:.2s;outline:none;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,59,78,.15)}
+.field input::placeholder,.field textarea::placeholder{color:#5b6371}
+.err{display:none;color:var(--accent);font-size:13px;font-weight:600;margin-top:12px;text-align:center}
+.err.show{display:block;animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ===== EDITOR (halaman penuh, menyatu, bisa di-scroll) ===== */
+.editor-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.editor-head h2{font-family:'Playfair Display',serif;font-size:30px}
+.editor-head p{color:var(--muted);font-size:14px;margin-top:4px}
+.editor-layout{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}
+@media(max-width:900px){.editor-layout{grid-template-columns:1fr}}
+.panel{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;
+}
+.panel + .panel{margin-top:24px}
+.panel-title{font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.panel-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.field textarea{min-height:280px;resize:vertical;line-height:1.8}
+.counter{font-size:12px;color:var(--muted);text-align:right;margin-top:6px}
+
+/* dropzone foto */
+.dropzone{
+    border:2px dashed rgba(255,255,255,.15);border-radius:14px;
+    padding:34px 20px;text-align:center;transition:.2s;cursor:pointer;position:relative;
+}
+.dropzone:hover,.dropzone.drag{border-color:var(--accent);background:rgba(255,59,78,.05)}
+.dropzone .dz-icon{font-size:32px;margin-bottom:8px}
+.dropzone p{font-size:13.5px;color:var(--muted)}
+.dropzone p b{color:var(--text)}
+.dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-preview{display:none;margin-top:16px;position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.photo-preview img{width:100%;max-height:260px;object-fit:cover;display:block}
+.photo-preview .rm{
+    position:absolute;top:10px;right:10px;background:rgba(11,13,16,.75);backdrop-filter:blur(6px);
+    border:1px solid var(--line);color:#fff;width:32px;height:32px;border-radius:50%;font-size:15px;
+    display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.photo-preview .rm:hover{background:var(--accent);border-color:var(--accent)}
+
+/* sidebar live preview */
+.live-label{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.live-card{background:var(--surface2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.live-card .thumb{aspect-ratio:16/9;background:var(--bg);display:flex;align-items:center;justify-content:center;color:#3a4150;font-size:13px;overflow:hidden}
+.live-card .thumb img{width:100%;height:100%;object-fit:cover}
+.live-card .body{padding:18px}
+.live-card h4{font-size:15.5px;font-weight:800;line-height:1.4;min-height:22px}
+.live-card .m{font-size:12px;color:var(--muted);margin-top:10px}
+.tip{margin-top:18px;font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tip b{color:var(--text)}
+
+/* ===== DETAIL ARTIKEL ===== */
+.article{max-width:760px;margin:0 auto}
+.article .back{
+    background:none;border:none;color:var(--muted);font-size:13.5px;font-weight:600;
+    display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;transition:.2s;padding:0;
+}
+.article .back:hover{color:var(--accent)}
+.article .tagline{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.article h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4.5vw,40px);line-height:1.25}
+.article .meta{display:flex;align-items:center;gap:12px;margin:20px 0 28px;color:var(--muted);font-size:13.5px;flex-wrap:wrap}
+.article .meta .sep{width:4px;height:4px;border-radius:50%;background:var(--muted)}
+.article figure{border-radius:18px;overflow:hidden;border:1px solid var(--line);margin-bottom:32px}
+.article figure img{width:100%;display:block;max-height:460px;object-fit:cover}
+.article .content{font-size:17px;line-height:1.95;color:#c9d0da;white-space:pre-wrap}
+.article .actions{display:flex;justify-content:flex-end;margin-top:44px;padding-top:24px;border-top:1px solid var(--line)}
+
+/* toast */
+.toast{
+    position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
+    background:var(--surface2);border:1px solid var(--line);color:var(--text);
+    padding:14px 24px;border-radius:14px;font-size:14px;font-weight:600;z-index:99;
+    box-shadow:0 16px 40px rgba(0,0,0,.5);transition:.35s cubic-bezier(.2,.9,.3,1.2);opacity:0;
+    display:flex;align-items:center;gap:10px;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.ok{border-color:rgba(42,157,143,.5)}
+.toast.bad{border-color:rgba(255,59,78,.5)}
+
+footer{
+    border-top:1px solid var(--line);padding:36px 24px;text-align:center;
+    color:var(--muted);font-size:13px;
+}
+footer b{color:var(--text)}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="brand" onclick="go('home')">
+            <div class="brand-icon">🌍</div>
+            <div>
+                <h1>Warta <em>Dunia</em></h1>
+                <small>Berita Tanpa Batas</small>
+            </div>
+        </div>
+        <div class="nav">
+            <span class="admin-pill" id="adminPill"><span class="dot"></span> ADMIN</span>
+            <button class="btn btn-primary" id="btnTulis" style="display:none" onclick="go('editor')">✍️ Tulis Berita</button>
+            <button class="btn btn-ghost" id="btnLogin" onclick="go('login')">Masuk</button>
+            <button class="btn btn-ghost" id="btnLogout" style="display:none" onclick="logout()">Keluar</button>
+        </div>
+    </div>
+</header>
+
+<div class="ticker"><span class="ticker-track"><b>LIVE</b> Selamat datang di Warta Dunia — kabar terkini, cepat, dan terpercaya dari seluruh penjuru dunia • • •</span></div>
+
+<main>
+
+<!-- ============ BERANDA ============ -->
+<section class="view active" id="view-home">
+    <div class="hero">
+        <div class="eyebrow">Terkini &amp; Terpercaya</div>
+        <h2>Kabar dunia, dalam satu genggaman.</h2>
+        <p>Warta Dunia menyajikan berita pilihan dari redaksi kami — akurat, berimbang, dan selalu diperbarui.</p>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid"></div>
+</section>
+
+<!-- ============ LOGIN ============ -->
+<section class="view" id="view-login">
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="icon">🔐</div>
+            <h2>Akses Redaksi</h2>
+            <p class="sub">Masukkan kode sandi untuk mengelola berita</p>
+            <div class="field">
+                <label>Kode Sandi</label>
+                <input type="password" id="inSandi" placeholder="••••••••••" onkeydown="if(event.key==='Enter')login()">
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="login()">Masuk sebagai Admin →</button>
+            <div class="err" id="loginErr">Kode sandi salah. Coba lagi.</div>
+            <p style="text-align:center;margin-top:22px"><button class="btn btn-ghost" onclick="go('home')">← Kembali ke Beranda</button></p>
+        </div>
+    </div>
+</section>
+
+<!-- ============ EDITOR (menyatu dengan website, bisa di-scroll) ============ -->
+<section class="view" id="view-editor">
+    <div class="editor-head">
+        <div>
+            <h2>✍️ Ruang Redaksi</h2>
+            <p>Tulis dan publikasikan berita baru untuk seluruh pembaca.</p>
+        </div>
+        <button class="btn btn-ghost" onclick="go('home')">← Kembali</button>
+    </div>
+
+    <div class="editor-layout">
+        <!-- kolom kiri: form -->
+        <div>
+            <div class="panel">
+                <div class="panel-title">Detail Berita</div>
+                <div class="field">
+                    <label>Judul Berita</label>
+                    <input type="text" id="fJudul" placeholder="Tulis judul yang menarik…" oninput="livePreview()">
+                </div>
+                <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                    <div>
+                        <label>Kategori</label>
+                        <select id="fKategori" onchange="livePreview()">
+                            <option>Dunia</option><option>Nasional</option><option>Politik</option>
+                            <option>Ekonomi</option><option>Olahraga</option><option>Teknologi</option>
+                            <option>Hiburan</option><option>Kesehatan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Penulis</label>
+                        <input type="text" id="fPenulis" placeholder="Nama penulis" oninput="livePreview()">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Isi Artikel</label>
+                    <textarea id="fIsi" placeholder="Tulis isi berita di sini… Gunakan enter untuk memisahkan paragraf." oninput="livePreview();hitungKata()"></textarea>
+                    <div class="counter" id="counter">0 kata</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Foto Berita</div>
+                <div class="dropzone" id="dropzone">
+                    <div class="dz-icon">🖼️</div>
+                    <p><b>Klik atau seret foto</b> ke sini<br>JPG / PNG — otomatis dikompres</p>
+                    <input type="file" id="fFoto" accept="image/*" onchange="prosesFoto(this.files[0])">
+                </div>
+                <div class="photo-preview" id="photoWrap">
+                    <img id="imgPrev" alt="preview">
+                    <button class="rm" onclick="hapusFoto()" title="Hapus foto">✕</button>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+                <button class="btn btn-primary" style="padding:14px 28px;font-size:15px" onclick="publish()">🚀 Publikasikan Berita</button>
+                <button class="btn btn-soft" style="padding:14px 24px" onclick="resetForm()">Reset</button>
+            </div>
+        </div>
+
+        <!-- kolom kanan: preview live -->
+        <div class="panel" style="position:sticky;top:96px">
+            <div class="live-label">● Pratinjau Langsung</div>
+            <div class="live-card">
+                <div class="thumb" id="liveThumb">Belum ada foto</div>
+                <div class="body">
+                    <span class="tag" style="position:static;display:inline-block;background:rgba(255,59,78,.12);border:1px solid rgba(255,59,78,.3);color:var(--accent);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:4px 11px;border-radius:99px;margin-bottom:10px" id="liveKat">Dunia</span>
+                    <h4 id="liveJudul">Judul berita akan muncul di sini…</h4>
+                    <div class="m" id="livePenulis">✍️ Penulis</div>
+                </div>
+            </div>
+            <div class="tip">💡 <b>Tips:</b> Judul yang baik maksimal 10–12 kata. Pastikan foto relevan dengan isi berita agar tampilan kartu lebih menarik.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ DETAIL ============ -->
+<section class="view" id="view-article">
+    <div class="article" id="articleBox"></div>
+</section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+    <b>Warta Dunia</b> © 2026 — Berita cepat, akurat, terpercaya.
+</footer>
+
+<script>
+const SANDI = "Aku_Xinta/Dunia";
+const KATEGORI = ["Semua","Dunia","Nasional","Politik","Ekonomi","Olahraga","Teknologi","Hiburan","Kesehatan"];
+let admin = sessionStorage.getItem("wd_admin") === "1";
+let foto = "";
+let filterKat = "Semua";
+
+/* ===== DATA ===== */
+const ambil = () => {
+    let d = JSON.parse(localStorage.getItem("wd_berita") || "null");
+    if (!d) {
+        d = [{
+            id: 1,
+            judul: "Selamat Datang di Warta Dunia",
+            kategori: "Dunia",
+            penulis: "Redaksi",
+            isi: "Warta Dunia adalah portal berita yang menyajikan informasi terkini dari seluruh penjuru dunia.\n\nKami berkomitmen menghadirkan berita yang cepat, akurat, dan terpercaya untuk Anda.\n\nTerima kasih telah berkunjung!",
+            foto: "",
+            tanggal: Date.now()
+        }];
+        localStorage.setItem("wd_berita", JSON.stringify(d));
+    }
+    return d;
+};
+const simpan = d => localStorage.setItem("wd_berita", JSON.stringify(d));
+const fmtTgl = ts => new Date(ts).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"hour"})+" • "+new Date(ts).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const thumbUrl = b => b.foto || `https://placehold.co/800x450/181c23/3a4150?text=WARTA+DUNIA`;
+
+/* ===== NAVIGASI ===== */
+function go(v){
+    if((v==="editor") && !admin){ v="login"; }
+    document.querySelectorAll(".view").forEach(el=>el.classList.remove("active"));
+    document.getElementById("view-"+v).classList.add("active");
+    if(v==="home") renderHome();
+    if(v==="login") setTimeout(()=>document.getElementById("inSandi").focus(),100);
+    window.scrollTo({top:0});
+}
+
+function renderNav(){
+    document.getElementById("adminPill").classList.toggle("show",admin);
+    document.getElementById("btnTulis").style.display = admin?"inline-flex":"none";
+    document.getElementById("btnLogin").style.display = admin?"none":"inline-flex";
+    document.getElementById("btnLogout").style.display = admin?"inline-flex":"none";
+}
+
+/* ===== LOGIN ===== */
+function login(){
+    const v = document.getElementById("inSandi").value;
+    if(v===SANDI){
+        admin=true; sessionStorage.setItem("wd_admin","1");
+        document.getElementById("inSandi").value="";
+        document.getElementById("loginErr").classList.remove("show");
+        renderNav(); toast("Selamat datang, Admin! 🎉","ok"); go("editor");
+    } else {
+        document.getElementById("loginErr").classList.add("show");
+    }
+}
+function logout(){
+    admin=false; sessionStorage.removeItem("wd_admin");
+    renderNav(); toast("Anda telah keluar.","ok"); go("home");
+}
+
+/* ===== BERANDA ===== */
+function renderHome(){
+    const data = ambil();
+    // chips
+    document.getElementById("chips").innerHTML = KATEGORI.map(k=>
+        `<button class="chip ${k===filterKat?'on':''}" onclick="setFilter('${k}')">${k}</button>`).join("");
+
+    const list = filterKat==="Semua" ? data : data.filter(b=>b.kategori===filterKat);
+    const grid = document.getElementById("grid");
+    if(!list.length){
+        grid.innerHTML = `<div class="empty"><div class="big">📭</div>Belum ada berita${filterKat!=="Semua"?` di kategori "${filterKat}"`:""}.<br>${admin?'Klik <b>Tulis Berita</b> untuk membuat yang pertama!':''}</div>`;
+        return;
+    }
+    grid.innerHTML = list.map(b=>`
+        <article class="card" onclick="bukaArtikel(${b.id})">
+            <div class="thumb">
+                <span class="tag">${esc(b.kategori)}</span>
+                <img src="${thumbUrl(b)}" alt="" loading="lazy">
+            </div>
+            <div class="body">
+                <h3>${esc(b.judul)}</h3>
+                <p class="excerpt">${esc(b.isi)}</p>
+                <div class="foot">
+                    <span class="avatar">${esc(b.penulis.trim().charAt(0).toUpperCase())}</span>
+                    <span>${esc(b.penulis)}</span>
+                    <span style="margin-left:auto">${fmtTgl(b.tanggal).split(" • ")[0]}</span>
+                </div>
+            </div>
+        </article>`).join("");
+}
+function setFilter(k){ filterKat=k; renderHome(); }
+
+/* ===== EDITOR ===== */
+function livePreview(){
+    const j = document.getElementById("fJudul").value.trim();
+    const p = document.getElementById("fPenulis").value.trim();
+    document.getElementById("liveJudul").textContent = j || "Judul berita akan muncul di sini…";
+    document.getElementById("liveKat").textContent = document.getElementById("fKategori").value;
+    document.getElementById("livePenulis").textContent = "✍️ " + (p || "Penulis");
+    document.getElementById("liveThumb").innerHTML = foto
+        ? `<img src="${foto}" alt="">` : "Belum ada foto";
+}
+function hitungKata(){
+    const t = document.getElementById("fIsi").value.trim();
+    document.getElementById("counter").textContent = (t ? t.split(/\s+/).length : 0) + " kata";
+}
+function prosesFoto(file){
+    if(!file) return;
+    const r = new FileReader();
+    r.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+            const c = document.createElement("canvas");
+            const s = Math.min(1, 1000/img.width);
+            c.width = img.width*s; c.height = img.height*s;
+            c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+            foto = c.toDataURL("image/jpeg",.72);
+            document.getElementById("imgPrev").src = foto;
+            document.getElementById("photoWrap").style.display = "block";
+            livePreview();
+        };
+        img.src = e.target.result;
+    };
+    r.readAsDataURL(file);
+}
+function hapusFoto(){
+    foto=""; document.getElementById("fFoto").value="";
+    document.getElementById("photoWrap").style.display="none";
+    livePreview();
+}
+function resetForm(){
+    ["fJudul","fPenulis","fIsi"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("fKategori").selectedIndex=0;
+    hapusFoto(); hitungKata(); livePreview();
+}
+function publish(){
+    const judul = document.getElementById("fJudul").value.trim();
+    const penulis = document.getElementById("fPenulis").value.trim();
+    const isi = document.getElementById("fIsi").value.trim();
+    if(!judul||!penulis||!isi){ toast("Judul, penulis, dan isi wajib diisi!","bad"); return; }
+    const data = ambil();
+    data.unshift({ id:Date.now(), judul, penulis, isi,
+        kategori:document.getElementById("fKategori").value, foto, tanggal:Date.now() });
+    try { simpan(data); }
+    catch(e){ toast("Penyimpanan penuh — gunakan foto lebih kecil.","bad"); return; }
+    resetForm();
+    toast("Berita berhasil dipublikasikan! 🎉","ok");
+    go("home");
+}
+
+/* drag & drop */
+const dz = document.getElementById("dropzone");
+["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("drag")}));
+["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("drag")}));
+dz.addEventListener("drop",e=>prosesFoto(e.dataTransfer.files[0]));
+
+/* ===== DETAIL ===== */
+function bukaArtikel(id){
+    const b = ambil().find(x=>x.id===id);
+    if(!b) return;
+    document.getElementById("articleBox").innerHTML = `
+        <button class="back" onclick="go('home')">← Kembali ke Beranda</button>
+        <div class="tagline"><span class="tag" style="position:static;display:inline-block;background:rgba(255,59,78,.12);border:1px solid rgba(255,59,78,.3);color:var(--accent);font-size:10.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 13px;border-radius:99px">${esc(b.kategori)}</span></div>
+        <h1>${esc(b.judul)}</h1>
+        <div class="meta">
+            <span class="avatar">${esc(b.penulis.trim().charAt(0).toUpperCase())}</span>
+            <b style="color:var(--text)">${esc(b.penulis)}</b>
+            <span class="sep"></span><span>${fmtTgl(b.tanggal)}</span>
+        </div>
+        ${b.foto?`<figure><img src="${b.foto}" alt="${esc(b.judul)}"></figure>`:""}
+        <div class="content">${esc(b.isi)}</div>
+        ${admin?`<div class="actions"><button class="btn btn-danger" onclick="hapus(${b.id})">🗑️ Hapus Artikel</button></div>`:""}`;
+    go("article");
+}
+function hapus(id){
+    if(!confirm("Hapus artikel ini secara permanen?")) return;
+    simpan(ambil().filter(b=>b.id!==id));
+    toast("Artikel dihapus.","ok"); go("home");
+}
+
+/* ===== TOAST ===== */
+let toastT;
+function toast(msg,type="ok"){
+    const t=document.getElementById("toast");
+    t.textContent=(type==="ok"?"✅ ":"⚠️ ")+msg;
+    t.className="toast show "+type;
+    clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),3200);
+}
+
+/* init */
+renderNav();
+renderHome();
+</script>
+</body>
+</html>
